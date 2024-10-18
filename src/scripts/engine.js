@@ -14,6 +14,9 @@ const state = {
         lastPosition: null,
         result: 0,
         currentTime: 60,
+        life: 3,
+      
+
 
     },
     actions: {
@@ -22,7 +25,11 @@ const state = {
     }
 };
 
-function playSound(){
+function resetGame(){
+    
+}
+
+function playSound() {
     let audio = new Audio("./src/audios/hit.m4a");
     audio.volume = 0.2
     audio.play()
@@ -40,8 +47,8 @@ function randomSquare() {
             return rdn - exc
         }
         return rdn
-    })(state.values.lastPosition) )
-    
+    })(state.values.lastPosition))
+
     let randomSquare = state.view.squares[randomNumber]
 
 
@@ -65,6 +72,12 @@ function addListenerHitBox() {
                 state.values.hitPosition = null
                 playSound();
             }
+            else {
+
+                state.values.life--;
+                state.view.vida.textContent ="x"+ state.values.life
+                playSound();
+            }
         })
     })
 }
@@ -75,15 +88,22 @@ function coutDown() {
 
     state.values.currentTime--
     state.view.timeLeft.textContent = state.values.currentTime
-    if (state.values.currentTime < 1) {
-        alert("game over! O seu resultado foi: " + state.values.result)
+    if (state.values.currentTime < 1 || state.values.life < 1) {
+        
         clearInterval(state.actions.countDownTimeId)
+        clearInterval(state.values.timeId)
+        alert("game over! O seu resultado foi: " + state.values.result)
+        window.location.reload()
     }
 
 }
 function initialize() {
-
+   
+    state.values.score=0
     state.view.timeLeft.textContent = state.values.currentTime
+    state.view.score.textContent = state.values.score
+    state.view.vida.textContent = state.values.life
+    
     moveEnemy();
     addListenerHitBox();
 
